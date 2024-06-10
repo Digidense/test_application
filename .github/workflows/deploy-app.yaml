@@ -54,8 +54,9 @@ jobs:
     - name: Apply HTTP service for test-app
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
-      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/http-service.yaml -n test-app
-
+      run: |
+          kubectl apply -f http-service.yaml
+          
     - name: Get services in test-app namespace
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
@@ -64,17 +65,20 @@ jobs:
     - name: Apply Pod Disruption Budget for test-app
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
-      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/pdb.yaml -n test-app
+      run: |
+          kubectl apply -f pdb.yaml
 
     - name: Apply ingress service for test-app
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
-      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/ingress-service.yaml -n test-app
-
+      run: |
+          kubectl apply -f ingress-service.yaml
+          
     - name: Apply Horizontal Pod Autoscaler for test-app
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
-      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/hpa.yaml -n test-app
+      run: |
+          kubectl apply -f hpa.yaml
 
     - name: Apply Metrics Server
       env:
