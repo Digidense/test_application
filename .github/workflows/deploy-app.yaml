@@ -1,4 +1,4 @@
-name: Deploy to EKS
+name: Deploy Application to EKS
 
 on:
   push:
