@@ -48,8 +48,9 @@ jobs:
     - name: Apply deployment for test-app
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
-      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/deployment.yaml -n test-app
-
+      run: |
+          kubectl apply -f deployment.yaml
+          
     - name: Apply HTTP service for test-app
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
