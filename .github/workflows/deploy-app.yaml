@@ -45,47 +45,52 @@ jobs:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl get ns
 
-    - name: Apply deployment for test-app
+    - name: Create deployment 
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: |
           kubectl apply -f deployment.yaml
           
-    - name: Apply HTTP service for test-app
+    - name: Create HTTP-service
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: |
           kubectl apply -f http-service.yaml
           
-    - name: Get services in test-app namespace
+    - name: Get services
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl get svc -n test-app
 
-    - name: Apply Pod Disruption Budget for test-app
+    - name: Create Pod Disruption Budget
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: |
           kubectl apply -f pdb.yaml
 
-    - name: Apply ingress service for test-app
+    - name: Create ingress service 
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: |
           kubectl apply -f ingress-service.yaml
-          
-    - name: Apply Horizontal Pod Autoscaler for test-app
+
+    - name: Get ingress details
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl get ingress -n test-app
+        
+    - name: Create Horizontal Pod Autoscaler
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: |
           kubectl apply -f hpa.yaml
 
-    - name: Apply Metrics Server
+    - name: Create Metrics Server
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
-    - name: Get Horizontal Pod Autoscaler in test-app namespace
+    - name: Get Horizontal Pod Autoscaler
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl get hpa -n test-app
