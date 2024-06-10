@@ -41,9 +41,6 @@ jobs:
     - name: Get namespaces
       run: kubectl get ns
 
-    - name: Apply ingress controller
-      run: kubectl apply -f ingress-controller.yaml
-
     - name: Get ingress controller pods
       run: kubectl -n ingress-nginx get pods -o wide
 
