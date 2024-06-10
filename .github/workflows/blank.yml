@@ -1,0 +1,74 @@
+name: Deploy to EKS
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Update kubeconfig
+      run: aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region us-east-1
+
+    - name: Get nodes
+      run: kubectl get nodes
+
+    - name: Get services
+      run: kubectl get svc
+
+    - name: Get namespaces
+      run: kubectl get ns
+
+    - name: Apply ingress controller
+      run: kubectl apply -f ingress-controller.yaml
+
+    - name: Get ingress controller pods
+      run: kubectl -n ingress-nginx get pods -o wide
+
+    - name: Get ingress controller services
+      run: kubectl get svc -n ingress-nginx
+
+    - name: Create namespace for test-app
+      run: kubectl create namespace test-app
+
+    - name: Apply deployment for test-app
+      run: kubectl apply -f deployment.yaml -n test-app
+
+    - name: Apply HTTP service for test-app
+      run: kubectl apply -f http-service.yaml -n test-app
+
+    - name: Get services in test-app namespace
+      run: kubectl get svc -n test-app
+
+    - name: Apply Pod Disruption Budget for test-app
+      run: kubectl apply -f pdb.yaml -n test-app
+
+    - name: Apply ingress service for test-app
+      run: kubectl apply -f ingress-service.yaml -n test-app
+
+    - name: Apply Horizontal Pod Autoscaler for test-app
+      run: kubectl apply -f hpa.yaml -n test-app
+
+    - name: Apply Metrics Server
+      run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+    - name: Get Horizontal Pod Autoscaler in test-app namespace
+      run: kubectl get hpa -n test-app
