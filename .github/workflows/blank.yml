@@ -30,40 +30,66 @@ jobs:
         aws-region: us-east-1
 
     - name: Update kubeconfig
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region us-east-1
 
     - name: Get nodes
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl get nodes
 
     - name: Get services
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl get svc
 
     - name: Get namespaces
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl get ns
 
     - name: Create namespace for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl create namespace test-app
 
     - name: Apply deployment for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl apply -f deployment.yaml -n test-app
 
     - name: Apply HTTP service for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl apply -f http-service.yaml -n test-app
 
     - name: Get services in test-app namespace
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl get svc -n test-app
 
     - name: Apply Pod Disruption Budget for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl apply -f pdb.yaml -n test-app
 
     - name: Apply ingress service for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl apply -f ingress-service.yaml -n test-app
 
     - name: Apply Horizontal Pod Autoscaler for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl apply -f hpa.yaml -n test-app
 
     - name: Apply Metrics Server
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
     - name: Get Horizontal Pod Autoscaler in test-app namespace
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: kubectl get hpa -n test-app
