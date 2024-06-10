@@ -41,12 +41,6 @@ jobs:
     - name: Get namespaces
       run: kubectl get ns
 
-    - name: Get ingress controller pods
-      run: kubectl -n ingress-nginx get pods -o wide
-
-    - name: Get ingress controller services
-      run: kubectl get svc -n ingress-nginx
-
     - name: Create namespace for test-app
       run: kubectl create namespace test-app
 
