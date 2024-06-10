@@ -1,0 +1,86 @@
+name: Deploy to EKS
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Update kubeconfig
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region us-east-1
+
+    - name: Get nodes
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl get nodes
+
+    - name: Get services
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl get svc
+
+    - name: Get namespaces
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl get ns
+
+    - name: Apply deployment for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/deployment.yaml -n test-app
+
+    - name: Apply HTTP service for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/http-service.yaml -n test-app
+
+    - name: Get services in test-app namespace
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl get svc -n test-app
+
+    - name: Apply Pod Disruption Budget for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/pdb.yaml -n test-app
+
+    - name: Apply ingress service for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/ingress-service.yaml -n test-app
+
+    - name: Apply Horizontal Pod Autoscaler for test-app
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl apply -f https://github.com/Digidense/test_application/blob/development/hpa.yaml -n test-app
+
+    - name: Apply Metrics Server
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+    - name: Get Horizontal Pod Autoscaler in test-app namespace
+      env:
+        KUBECONFIG: ${{ github.workspace }}/.kube/config
+      run: kubectl get hpa -n test-app
