@@ -7,7 +7,7 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
   rules:
-    - host: www.devopswizard.xyz
+    - host: devopswizard.xyz
       http:
         paths:
           - path: /
