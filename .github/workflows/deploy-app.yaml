@@ -83,7 +83,7 @@ jobs:
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: |
-          kubectl apply -f hpa.yaml
+          kubectl apply -f nginx-hpa.yaml
 
     - name: Create Metrics Server
       env:
