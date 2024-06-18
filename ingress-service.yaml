@@ -6,7 +6,7 @@ metadata:
   annotations:
 spec:
   rules:
-    - host: degidense.xyz
+    - host: digidense.xyz
       http:
         paths:
           - path: /
