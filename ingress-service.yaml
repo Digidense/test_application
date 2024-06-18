@@ -4,10 +4,9 @@ metadata:
   name: http-app-ingress
   namespace: test-app
   annotations:
-#    alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
   rules:
-    - host: devopswizard.xyz
+    - host: degidense.xyz
       http:
         paths:
           - path: /
