@@ -60,7 +60,7 @@ jobs:
     - name: Get services
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
-      run: kubectl get svc -n test-app
+      run: kubectl get svc 
 
     - name: Create Pod Disruption Budget
       env:
@@ -77,7 +77,7 @@ jobs:
     - name: Get ingress details
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
-      run: kubectl get ingress -n test-app
+      run: kubectl get ingress 
         
     - name: Create Horizontal Pod Autoscaler
       env:
@@ -93,4 +93,4 @@ jobs:
     - name: Get Horizontal Pod Autoscaler
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
-      run: kubectl get hpa -n test-app
+      run: kubectl get hpa 
