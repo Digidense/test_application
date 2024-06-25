@@ -72,7 +72,7 @@ jobs:
       env:
         KUBECONFIG: ${{ github.workspace }}/.kube/config
       run: |
-          kubectl apply -f ingress.yaml
+          kubectl apply -f igress.yaml
 
     - name: Get ingress details
       env:
